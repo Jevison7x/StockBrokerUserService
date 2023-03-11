@@ -11,6 +11,7 @@
  */
 package com.stockBroker.userService.controller;
 
+import com.stockBroker.userService.dto.BuyStockDTO;
 import com.stockBroker.userService.dto.TransactionDto;
 import com.stockBroker.userService.dto.UpdateUserStockDTO;
 import com.stockBroker.userService.dto.UserStockRequest;
@@ -74,9 +75,9 @@ public class UserStockController
 
     @PostMapping("/buy-stock")
     @ResponseStatus(HttpStatus.OK)
-    public String BuyUserStocks(@RequestBody TransactionDto td, UserStockRequest userStockRequest)
+    public String BuyUserStocks(@RequestBody BuyStockDTO bsdto)
     {
-        userStockService.buyTransactionStuff(td, userStockRequest);
+        userStockService.buyTransactionStuff(bsdto.getTransactionDto(), bsdto.getUserStockRequest());
         return "yup, u hv made a buy";
     }
 }
