@@ -35,9 +35,9 @@ public class UserService
 
     public void createNewUser(UserRequest userRequest)
     {
-        if(userRepository.existsById(userRequest.getUsername()))
+        if(userRepository.findByUsername(userRequest.getUsername()) != null)
             throw new IllegalArgumentException("Username already exists for another user");
-        else if(userRepository.existsById(userRequest.getEmail()))
+        else if(userRepository.findByEmail(userRequest.getEmail()) != null)
             throw new IllegalArgumentException("Email already exists for another user");
         else
         {
@@ -53,7 +53,7 @@ public class UserService
 
     public void updateUserDetails(User userUpdateTo)
     {
-        if(userRepository.existsById(userUpdateTo.getUsername()))
+        if(userRepository.findByEmail(userUpdateTo.getEmail()) != null)
             throw new IllegalArgumentException("Username already exists for another user");
         else
             userRepository.updateEmailByUsername(userUpdateTo.getEmail(), userUpdateTo.getUsername());

@@ -11,7 +11,9 @@
  */
 package com.stockBroker.userService.repository;
 
+import com.stockBroker.userService.model.User;
 import com.stockBroker.userService.model.UserStock;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -24,7 +26,9 @@ import org.springframework.data.repository.query.Param;
 public interface UserStockRepository extends JpaRepository<UserStock, Long>
 {
     @Modifying
+    @Transactional
     @Query("UPDATE UserStock us SET us.companySharesOwned = :newShares WHERE us.user = :user AND us.companyName = :companyName")
-    void updateUserShares(@Param("newShares") double newShares, @Param("user") String username, @Param("companyName") String companyName);
+    void updateUserShares(@Param("newShares") double newShares, @Param("user") User username, @Param("companyName") String companyName);
 
+    UserStock findByCompanyNameAndUserUsername(String companyName, String username);
 }

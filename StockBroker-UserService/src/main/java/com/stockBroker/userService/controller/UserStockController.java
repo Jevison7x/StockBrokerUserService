@@ -11,6 +11,7 @@
  */
 package com.stockBroker.userService.controller;
 
+import com.stockBroker.userService.dto.TransactionDto;
 import com.stockBroker.userService.dto.UpdateUserStockDTO;
 import com.stockBroker.userService.dto.UserStockRequest;
 import com.stockBroker.userService.model.User;
@@ -61,5 +62,21 @@ public class UserStockController
         userStock.setCompanyName(updateUserStockDTO.getCompanyName());
         userStockService.updateCompanySharesOwned(userStock);
         return "yup, u be bad guy";
+    }
+
+    @PostMapping("/sell-stock")
+    @ResponseStatus(HttpStatus.OK)
+    public String sellUserStocks(@RequestBody TransactionDto td)
+    {
+        userStockService.sellTransactionStuff(td);
+        return "yup, u hv made a sell";
+    }
+
+    @PostMapping("/buy-stock")
+    @ResponseStatus(HttpStatus.OK)
+    public String BuyUserStocks(@RequestBody TransactionDto td, UserStockRequest userStockRequest)
+    {
+        userStockService.buyTransactionStuff(td, userStockRequest);
+        return "yup, u hv made a buy";
     }
 }

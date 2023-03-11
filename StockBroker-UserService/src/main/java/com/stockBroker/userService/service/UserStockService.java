@@ -11,6 +11,7 @@
  */
 package com.stockBroker.userService.service;
 
+import com.stockBroker.userService.dto.TransactionDto;
 import com.stockBroker.userService.dto.UserStockRequest;
 import com.stockBroker.userService.model.UserStock;
 import com.stockBroker.userService.repository.UserStockRepository;
@@ -42,6 +43,37 @@ public class UserStockService
 
     public void updateCompanySharesOwned(UserStock userStock)
     {
-        userStockRepository.updateUserShares(userStock.getCompanySharesOwned(), userStock.getUser().getUsername(), userStock.getCompanyName());
+        userStockRepository.updateUserShares(userStock.getCompanySharesOwned(), userStock.getUser(), userStock.getCompanyName());
+    }
+
+    public UserStock getUserByCompanyNameAndUsername(String companyName, String username)
+    {
+        UserStock userStock = userStockRepository.findByCompanyNameAndUserUsername(companyName, username);
+        if(userStock != null)
+            return userStock;
+        else
+            // handle case where user is not found
+            return null;
+    }
+
+    public void buyTransactionStuff(TransactionDto td, UserStockRequest userStockRequest)
+    {
+        UserStock userStock = getUserByCompanyNameAndUsername(td.getCompanyName(), td.getUsername());
+        if(userStock != null)
+        {
+            double newUserStockBalance = userStock.getCompanySharesOwned() + td.getAmount();
+            userStock.setCompanySharesOwned(newUserStockBalance);
+            updateCompanySharesOwned(userStock);
+        }
+        else
+            createNewUserStock(userStockRequest);
+    }
+
+    public void sellTransactionStuff(TransactionDto td)
+    {
+        UserStock userStock = getUserByCompanyNameAndUsername(td.getCompanyName(), td.getUsername());
+        double newUserStockBalance = userStock.getCompanySharesOwned() - td.getAmount();
+        userStock.setCompanySharesOwned(newUserStockBalance);
+        updateCompanySharesOwned(userStock);
     }
 }
