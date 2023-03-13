@@ -49,11 +49,10 @@ public class LoginUserServlet extends HttpServlet
             String password = request.getParameter("password");
             String rememberMe = request.getParameter("remember");
             User user = UserDAO.loginUser(userNameOrEmail, password);
+            UserToken userToken = UserTokenDAO.getUserTokenByUserName(user.getUserName());
             if(user != null)
             {
                 if(rememberMe != null)
-                {
-                    UserToken userToken = UserTokenDAO.getUserTokenByUserName(user.getUserName());
                     if(userToken == null)
                     {
                         Timestamp timestamp = DateTimeUtil.getTodayTimeZone();
@@ -81,10 +80,7 @@ public class LoginUserServlet extends HttpServlet
                         userToken.setLifeSpan(104300);
                         UserTokenDAO.updateUserTokenExpiryDateAndLifeSpan(userToken);
                     }
-                }
                 else
-                {
-                    UserToken userToken = UserTokenDAO.getUserTokenByUserName(user.getUserName());
                     if(userToken == null)
                     {
                         Timestamp timestamp = DateTimeUtil.getTodayTimeZone();
@@ -112,10 +108,10 @@ public class LoginUserServlet extends HttpServlet
                         userToken.setLifeSpan(1443);
                         UserTokenDAO.updateUserTokenExpiryDateAndLifeSpan(userToken);
                     }
-                }
 
                 JSONObject jsono = new JSONObject();
                 jsono.put("user", user);
+                jsono.put("userToken", userToken.getToken());
                 out.print(jsono);
             }
             else
