@@ -15,6 +15,8 @@ import com.bizblock.user.security.Digester;
 import com.bizblock.user.util.DateTimeUtil;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -37,15 +39,16 @@ public class CreateNewUserServlet extends HttpServlet
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, JSONException
     {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
+        JSONObject jsonResponse = new JSONObject();
         try
         {
-            String email = request.getParameter("email").trim();
+
             String userName = request.getParameter("userName").trim();
+            String email = request.getParameter("email").trim();
             String firstName = request.getParameter("firstName").trim();
             String password = request.getParameter("password");
             String conpassword = request.getParameter("conpassword");
@@ -78,23 +81,13 @@ public class CreateNewUserServlet extends HttpServlet
         }
         catch(Exception xcp)
         {
-            if(xcp instanceof IllegalArgumentException)
-            {
-                xcp.printStackTrace(System.err);
-                try
-                {
-                    JSONObject jsono = new JSONObject();
-                    jsono.put("message", xcp.getMessage());
-                    out.print(jsono);
-                }
-                catch(JSONException jsone)
-                {
-                    throw new RuntimeException(jsone);
-                }
-            }
-            else
-                throw new RuntimeException(xcp);
+
+            jsonResponse.put("status", "error");
+            jsonResponse.put("message", xcp.getStackTrace());
+            out.print(jsonResponse);
+            xcp.printStackTrace(System.err);
         }
+
         finally
         {
             out.close();
@@ -113,7 +106,15 @@ public class CreateNewUserServlet extends HttpServlet
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException
     {
-        processRequest(request, response);
+        try
+        {
+            processRequest(request, response);
+        }
+        catch(JSONException ex)
+        {
+            Logger.getLogger(CreateNewUserServlet.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
