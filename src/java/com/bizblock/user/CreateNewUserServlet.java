@@ -83,7 +83,7 @@ public class CreateNewUserServlet extends HttpServlet
         {
 
             jsonResponse.put("status", "error");
-            jsonResponse.put("message", xcp.getStackTrace());
+            jsonResponse.put("message", xcp.getMessage());
             out.print(jsonResponse);
             xcp.printStackTrace(System.err);
         }
