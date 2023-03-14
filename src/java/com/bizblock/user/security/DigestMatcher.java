@@ -1,16 +1,3 @@
-/*
- * ==========================================================================================
- * @(#)DigestMatcher.java
- * Document type: Plain Old Java Object Class
- * Company: Xyneex Technologies
- * Author: Jevison Archibong
- * Date/Time Created: September 05, 2010. 08:52 PM
- * Version: 1.1
- * Compiler: JDK 1.6.0 SE
- * Operating System: Windows Vista Home Basic
- * Computer System: Becky-PC
- * ==========================================================================================
- */
 package com.bizblock.user.security;
 
 import org.jasypt.digest.StandardStringDigester;
@@ -22,9 +9,7 @@ import org.jasypt.digest.StandardStringDigester;
  * and if it succeeds, then the password is said to match the given digest.
  * </p>
  *
- * @author Jevison Archibong
- *
- * @since 05 September 2010, 20:52:45
+ * @author Praise
  *
  * @version 1.1
  *

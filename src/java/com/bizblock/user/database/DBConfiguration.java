@@ -10,7 +10,7 @@ import javax.persistence.PersistenceException;
 
 /**
  *
- * @author Jevison7x
+ * @author Praise
  */
 public final class DBConfiguration implements AutoCloseable
 {

@@ -9,7 +9,7 @@ import java.util.Random;
 
 /**
  *
- * @author Jevison7x
+ * @author Praise
  */
 public class RandomNumberGenerator
 {
