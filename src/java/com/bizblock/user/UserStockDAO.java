@@ -35,7 +35,7 @@ public class UserStockDAO
 {
     public static void registerNewUserStock(UserStock userStock) throws Exception, EntityExistsException
     {
-        try(DBConfiguration dbConfig = new DBConfiguration())
+        try( DBConfiguration dbConfig = new DBConfiguration())
         {
             EntityManager em = dbConfig.getEntityManager();
             em.getTransaction().begin();
@@ -46,7 +46,7 @@ public class UserStockDAO
 
     public static UserStock getUserStockByUserNameAndCompanyName(String userName, String companyName) throws Exception
     {
-        try(DBConfiguration dbConfig = new DBConfiguration())
+        try( DBConfiguration dbConfig = new DBConfiguration())
         {
             EntityManager em = dbConfig.getEntityManager();
             String sql = "SELECT * FROM " + USER_STOCKS + " WHERE " + USER_NAME + " = ? AND " + COMPANY_NAME + " = ?";
@@ -110,7 +110,7 @@ public class UserStockDAO
             newUserStock.setCompanyName(companyName);
             newUserStock.setNumberOfShares(noOfShares);
             newUserStock.setSymbol(symbol);
-            newUserStock.setUser(user);
+            newUserStock.setUserName(userName);
             newUserStock.setId(generateUniqueUserID());
             registerNewUserStock(newUserStock);
         }
@@ -119,7 +119,7 @@ public class UserStockDAO
     public static String generateUniqueUserID() throws Exception
     {
         String userId = null;
-        try(DBConfiguration dbConfig = new DBConfiguration())
+        try( DBConfiguration dbConfig = new DBConfiguration())
         {
             EntityManager em = dbConfig.getEntityManager();
             User user;
@@ -136,7 +136,7 @@ public class UserStockDAO
     public static List<UserStock> getAllUserStockByUserName(String username) throws Exception
     {
 
-        try(DBConfiguration dbConfig = new DBConfiguration())
+        try( DBConfiguration dbConfig = new DBConfiguration())
         {
             EntityManager em = dbConfig.getEntityManager();
             String sql = "SELECT * FROM " + USER_STOCKS + " WHERE " + USER_NAME + " = ?";

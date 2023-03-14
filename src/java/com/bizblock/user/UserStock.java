@@ -15,8 +15,6 @@ import static com.bizblock.user.UserStock.USER_STOCKS;
 import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
@@ -30,9 +28,7 @@ public class UserStock implements Serializable
 {
     @Id
     private String id;
-    @ManyToOne
-    @JoinColumn(name = USER_NAME)
-    private User user;
+    private String userName;
     private String symbol;
     private int numberOfShares;
     private String companyName;
@@ -49,16 +45,6 @@ public class UserStock implements Serializable
     public void setId(String id)
     {
         this.id = id;
-    }
-
-    public User getUser()
-    {
-        return user;
-    }
-
-    public void setUser(User user)
-    {
-        this.user = user;
     }
 
     public String getSymbol()
@@ -89,6 +75,16 @@ public class UserStock implements Serializable
     public void setCompanyName(String companyName)
     {
         this.companyName = companyName;
+    }
+
+    public String getUserName()
+    {
+        return userName;
+    }
+
+    public void setUserName(String userName)
+    {
+        this.userName = userName;
     }
 
     public static final String USER_STOCKS = "userStocks";
