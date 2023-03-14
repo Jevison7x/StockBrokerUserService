@@ -23,6 +23,10 @@
         <servlet-name>ListOfUserStockServlet</servlet-name>
         <servlet-class>com.bizblock.user.ListOfUserStockServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ConvertCurrency</servlet-name>
+        <servlet-class>com.bizblock.user.ConvertCurrency</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>CreateNewUserServlet</servlet-name>
         <url-pattern>/create-new-user</url-pattern>
@@ -42,6 +46,10 @@
     <servlet-mapping>
         <servlet-name>ListOfUserStockServlet</servlet-name>
         <url-pattern>/my-stocks</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ConvertCurrency</servlet-name>
+        <url-pattern>/currency-converter</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

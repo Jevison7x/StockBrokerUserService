@@ -14,11 +14,17 @@ package com.bizblock.user;
 import static com.bizblock.user.UserStock.*;
 import com.bizblock.user.database.DBConfiguration;
 import com.bizblock.user.util.RandomNumberGenerator;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import java.util.List;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  *
@@ -139,5 +145,21 @@ public class UserStockDAO
             List<UserStock> userStocklist = q.getResultList();
             return userStocklist;
         }
+    }
+
+    public static double convertCurrency(double amount) throws UnirestException, JSONException
+    {
+        HttpResponse<JsonNode> jsonResponse = Unirest.get("https://api.apilayer.com/exchangerates_data/latest")
+                .header("apikey", "7Ct4899ogYI4n73hCpQ0RaNEgDTbzILC")
+                .queryString("symbol", "NGN")
+                .queryString("base", "USD")
+                .asJson();
+        JsonNode jsonNode = jsonResponse.getBody();
+        JSONObject jsonoObject = jsonNode.getObject();
+        JSONObject rates = jsonoObject.getJSONObject("rate");
+        double rate = rates.getDouble("NGN");
+        double nairaValue = amount * rate;
+        return nairaValue;
+
     }
 }
