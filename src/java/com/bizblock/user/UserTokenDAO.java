@@ -12,12 +12,13 @@
 package com.bizblock.user;
 
 import static com.bizblock.user.User.USER_NAME;
+import static com.bizblock.user.UserToken.EXPIRY_DATE;
 import static com.bizblock.user.UserToken.USER_TOKEN;
 import com.bizblock.user.database.DBConfiguration;
 import com.bizblock.user.util.RandomNumberGenerator;
+import java.util.List;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 /**
@@ -29,7 +30,7 @@ public class UserTokenDAO
 {
     public static void registerNewUserToken(UserToken userToken) throws Exception, EntityExistsException
     {
-        try(DBConfiguration dbConfig = new DBConfiguration())
+        try( DBConfiguration dbConfig = new DBConfiguration())
         {
             EntityManager em = dbConfig.getEntityManager();
             em.getTransaction().begin();
@@ -40,25 +41,24 @@ public class UserTokenDAO
 
     public static UserToken getUserTokenByUserName(String userName) throws Exception
     {
-        try(DBConfiguration dbConfig = new DBConfiguration())
+        try( DBConfiguration dbConfig = new DBConfiguration())
         {
             EntityManager em = dbConfig.getEntityManager();
-            String sql = "SELECT * FROM " + USER_TOKEN + " WHERE " + USER_NAME + " = ?  ";
+            String sql = "SELECT * FROM " + USER_TOKEN + " WHERE " + USER_NAME + " = ? ORDER BY " + EXPIRY_DATE + " DESC";
             Query q = em.createNativeQuery(sql, UserToken.class);
             q.setParameter(1, userName);
-            UserToken userToken = (UserToken)q.getSingleResult();
-            return userToken;
-        }
-        catch(NoResultException nre)
-        {
-            return null;
+            List<UserToken> tokens = q.getResultList();
+            if(tokens.isEmpty())
+                return null;
+            else
+                return tokens.get(0);
         }
     }
 
     public static String generateUniqueUserToken() throws Exception
     {
         String token = null;
-        try(DBConfiguration dbConfig = new DBConfiguration())
+        try( DBConfiguration dbConfig = new DBConfiguration())
         {
             EntityManager em = dbConfig.getEntityManager();
             UserToken userToken;

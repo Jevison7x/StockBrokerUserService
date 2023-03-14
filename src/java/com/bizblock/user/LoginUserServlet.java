@@ -29,7 +29,6 @@ import org.json.JSONObject;
  */
 public class LoginUserServlet extends HttpServlet
 {
-
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *
@@ -49,9 +48,9 @@ public class LoginUserServlet extends HttpServlet
             String password = request.getParameter("password");
             String rememberMe = request.getParameter("rememberMe");
             User user = UserDAO.loginUser(userNameOrEmail, password);
-            UserToken userToken = UserTokenDAO.getUserTokenByUserName(user.getUserName());
             if(user != null)
             {
+                UserToken userToken = UserTokenDAO.getUserTokenByUserName(user.getUserName());
                 if(rememberMe != null)
                     if(userToken == null)
                     {
@@ -61,11 +60,11 @@ public class LoginUserServlet extends HttpServlet
                         calendar.add(Calendar.DAY_OF_MONTH, 7);
                         Timestamp newTimestamp = new Timestamp(calendar.getTimeInMillis());
 
-                        UserToken newUserToken = new UserToken();
-                        newUserToken.setUserName(user.getUserName());
-                        newUserToken.setToken(UserTokenDAO.generateUniqueUserToken());
-                        newUserToken.setLifeSpan(104300);
-                        newUserToken.setExpiryDate(newTimestamp);
+                        userToken = new UserToken();
+                        userToken.setUserName(user.getUserName());
+                        userToken.setToken(UserTokenDAO.generateUniqueUserToken());
+                        userToken.setLifeSpan(104300);
+                        userToken.setExpiryDate(newTimestamp);
                         UserTokenDAO.registerNewUserToken(userToken);
                     }
                     else
@@ -88,11 +87,11 @@ public class LoginUserServlet extends HttpServlet
                     calendar.add(Calendar.DAY_OF_MONTH, 1);
                     Timestamp newTimestamp = new Timestamp(calendar.getTimeInMillis());
 
-                    UserToken newUserToken = new UserToken();
-                    newUserToken.setUserName(user.getUserName());
-                    newUserToken.setToken(UserTokenDAO.generateUniqueUserToken());
-                    newUserToken.setLifeSpan(1443);
-                    newUserToken.setExpiryDate(newTimestamp);
+                    userToken = new UserToken();
+                    userToken.setUserName(user.getUserName());
+                    userToken.setToken(UserTokenDAO.generateUniqueUserToken());
+                    userToken.setLifeSpan(1443);
+                    userToken.setExpiryDate(newTimestamp);
                     UserTokenDAO.registerNewUserToken(userToken);
                 }
                 else
@@ -109,15 +108,16 @@ public class LoginUserServlet extends HttpServlet
                 }
 
                 JSONObject jsono = new JSONObject();
-                jsono.put("data", "success");
-                jsono.put("user", user);
+                jsono.put("status", "success");
+                jsono.put("user", new JSONObject(user));
                 jsono.put("userToken", userToken.getToken());
                 out.print(jsono);
             }
             else
             {
                 JSONObject jsono = new JSONObject();
-                jsono.put("message", "oops wrong user input");
+                jsono.put("status", "error");
+                jsono.put("message", "Invalid username or password.");
                 out.print(jsono);
             }
         }
@@ -126,6 +126,7 @@ public class LoginUserServlet extends HttpServlet
             try
             {
                 JSONObject jsono = new JSONObject();
+                jsono.put("status", "error");
                 jsono.put("message", xcp.getMessage());
                 out.print(jsono);
             }
