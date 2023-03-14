@@ -75,7 +75,7 @@ public class CreateNewUserServlet extends HttpServlet
 
                 System.out.println("Regitered user.................");
                 JSONObject jsono = new JSONObject();
-                jsono.put("message", "success");
+                jsono.put("status", "success");
                 out.print(jsono);
             }
         }
@@ -96,7 +96,6 @@ public class CreateNewUserServlet extends HttpServlet
                 xcp.printStackTrace(System.err);
             }
         }
-
         finally
         {
             out.close();
