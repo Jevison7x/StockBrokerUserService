@@ -53,6 +53,8 @@ public class CreateNewUserServlet extends HttpServlet
             String lastName = request.getParameter("lastName");
             if(UserDAO.getUserByUserNameOrEmail(email) != null)
                 throw new IllegalArgumentException("An account already exists with those details.");
+            if(UserDAO.getUserByUserNameOrEmail(userName) != null)
+                throw new IllegalArgumentException("An account already exists with those details.");
             if(userName.isBlank())
                 throw new IllegalArgumentException("Username should not be empty.");
             else if(password.length() < 6)
