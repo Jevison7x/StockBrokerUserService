@@ -15,8 +15,6 @@ import com.bizblock.user.security.Digester;
 import com.bizblock.user.util.DateTimeUtil;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -39,7 +37,7 @@ public class CreateNewUserServlet extends HttpServlet
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, JSONException
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
@@ -47,14 +45,16 @@ public class CreateNewUserServlet extends HttpServlet
         try
         {
 
-            String userName = request.getParameter("userName").trim();
-            String email = request.getParameter("email").trim();
-            String firstName = request.getParameter("firstName").trim();
+            String userName = request.getParameter("userName");
+            String email = request.getParameter("email");
+            String firstName = request.getParameter("firstName");
             String password = request.getParameter("password");
             String conpassword = request.getParameter("conpassword");
-            String lastName = request.getParameter("lastName").trim();
+            String lastName = request.getParameter("lastName");
             if(UserDAO.getUserByUserNameOrEmail(email) != null)
-                throw new IllegalArgumentException("An account  already exists with those details.");
+                throw new IllegalArgumentException("An account already exists with those details.");
+            if(userName.isBlank())
+                throw new IllegalArgumentException("Username should not be empty.");
             else if(password.length() < 6)
                 throw new IllegalArgumentException("Password should be at least 6 characters.");
             else if(!password.equals(conpassword))
@@ -81,11 +81,20 @@ public class CreateNewUserServlet extends HttpServlet
         }
         catch(Exception xcp)
         {
-
-            jsonResponse.put("status", "error");
-            jsonResponse.put("message", xcp.getMessage());
-            out.print(jsonResponse);
-            xcp.printStackTrace(System.err);
+            try
+            {
+                if(xcp instanceof NullPointerException)
+                    jsonResponse.put("message", "Please complete all mandatory fields.");
+                else
+                    jsonResponse.put("message", xcp.getMessage());
+                jsonResponse.put("status", "error");
+                out.print(jsonResponse);
+                xcp.printStackTrace(System.err);
+            }
+            catch(JSONException jsone)
+            {
+                xcp.printStackTrace(System.err);
+            }
         }
 
         finally
@@ -106,15 +115,7 @@ public class CreateNewUserServlet extends HttpServlet
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException
     {
-        try
-        {
-            processRequest(request, response);
-        }
-        catch(JSONException ex)
-        {
-            Logger.getLogger(CreateNewUserServlet.class
-                    .getName()).log(Level.SEVERE, null, ex);
-        }
+        processRequest(request, response);
     }
 
     /**
