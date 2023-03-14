@@ -47,7 +47,7 @@ public class LoginUserServlet extends HttpServlet
         {
             String userNameOrEmail = request.getParameter("userNameOrEmail");
             String password = request.getParameter("password");
-            String rememberMe = request.getParameter("remember");
+            String rememberMe = request.getParameter("rememberMe");
             User user = UserDAO.loginUser(userNameOrEmail, password);
             UserToken userToken = UserTokenDAO.getUserTokenByUserName(user.getUserName());
             if(user != null)
@@ -80,36 +80,36 @@ public class LoginUserServlet extends HttpServlet
                         userToken.setLifeSpan(104300);
                         UserTokenDAO.updateUserTokenExpiryDateAndLifeSpan(userToken);
                     }
+                else if(userToken == null)
+                {
+                    Timestamp timestamp = DateTimeUtil.getTodayTimeZone();
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(timestamp.getTime());
+                    calendar.add(Calendar.DAY_OF_MONTH, 1);
+                    Timestamp newTimestamp = new Timestamp(calendar.getTimeInMillis());
+
+                    UserToken newUserToken = new UserToken();
+                    newUserToken.setUserName(user.getUserName());
+                    newUserToken.setToken(UserTokenDAO.generateUniqueUserToken());
+                    newUserToken.setLifeSpan(1443);
+                    newUserToken.setExpiryDate(newTimestamp);
+                    UserTokenDAO.registerNewUserToken(userToken);
+                }
                 else
-                    if(userToken == null)
-                    {
-                        Timestamp timestamp = DateTimeUtil.getTodayTimeZone();
-                        Calendar calendar = Calendar.getInstance();
-                        calendar.setTimeInMillis(timestamp.getTime());
-                        calendar.add(Calendar.DAY_OF_MONTH, 1);
-                        Timestamp newTimestamp = new Timestamp(calendar.getTimeInMillis());
+                {
+                    Timestamp timestamp = DateTimeUtil.getTodayTimeZone();
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(timestamp.getTime());
+                    calendar.add(Calendar.DAY_OF_MONTH, 1);
+                    Timestamp newTimestamp = new Timestamp(calendar.getTimeInMillis());
 
-                        UserToken newUserToken = new UserToken();
-                        newUserToken.setUserName(user.getUserName());
-                        newUserToken.setToken(UserTokenDAO.generateUniqueUserToken());
-                        newUserToken.setLifeSpan(1443);
-                        newUserToken.setExpiryDate(newTimestamp);
-                        UserTokenDAO.registerNewUserToken(userToken);
-                    }
-                    else
-                    {
-                        Timestamp timestamp = DateTimeUtil.getTodayTimeZone();
-                        Calendar calendar = Calendar.getInstance();
-                        calendar.setTimeInMillis(timestamp.getTime());
-                        calendar.add(Calendar.DAY_OF_MONTH, 1);
-                        Timestamp newTimestamp = new Timestamp(calendar.getTimeInMillis());
-
-                        userToken.setExpiryDate(newTimestamp);
-                        userToken.setLifeSpan(1443);
-                        UserTokenDAO.updateUserTokenExpiryDateAndLifeSpan(userToken);
-                    }
+                    userToken.setExpiryDate(newTimestamp);
+                    userToken.setLifeSpan(1443);
+                    UserTokenDAO.updateUserTokenExpiryDateAndLifeSpan(userToken);
+                }
 
                 JSONObject jsono = new JSONObject();
+                jsono.put("data", "success");
                 jsono.put("user", user);
                 jsono.put("userToken", userToken.getToken());
                 out.print(jsono);
