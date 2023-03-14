@@ -48,6 +48,7 @@ public class SellUserStockServlet extends HttpServlet
             int noOfShares = Integer.parseInt(request.getParameter("noOfShares"));
             UserStockDAO.sellUserStock(userName, companyName, noOfShares);
             JSONObject jsono = new JSONObject();
+            jsono.put("status", "success");
             jsono.put("message", "Successfully Sold");
             out.print(jsono);
         }
@@ -56,8 +57,10 @@ public class SellUserStockServlet extends HttpServlet
             try
             {
                 JSONObject jsono = new JSONObject();
+                jsono.put("status", "error");
                 jsono.put("message", e.getMessage());
                 out.print(jsono);
+                e.printStackTrace(System.err);
             }
             catch(JSONException jsone)
             {

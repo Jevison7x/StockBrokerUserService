@@ -43,10 +43,13 @@ public class ConvertCurrency extends HttpServlet
 
         try
         {
+            String currencyPayment = request.getParameter("currencyPayment");
+            String companyCurrency = request.getParameter("companyCurrency");
             double amount = Double.parseDouble(request.getParameter("amount"));
-            double amountInDollar = UserStockDAO.convertCurrency(amount);
+            double worth = UserStockDAO.convertCurrency(amount, currencyPayment, companyCurrency);
             JSONObject jsono = new JSONObject();
-            jsono.put("amountInDollar", amountInDollar);
+            jsono.put("status", "success");
+            jsono.put("currencyConverted", worth);
             out.print(jsono);
         }
         catch(Exception e)
@@ -54,6 +57,7 @@ public class ConvertCurrency extends HttpServlet
             try
             {
                 JSONObject jsone = new JSONObject();
+                jsone.put("status", "error");
                 jsone.put("message", e.getMessage());
                 out.print(jsone);
             }

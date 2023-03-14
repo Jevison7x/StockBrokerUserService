@@ -35,7 +35,7 @@ public class UserStockDAO
 {
     public static void registerNewUserStock(UserStock userStock) throws Exception, EntityExistsException
     {
-        try( DBConfiguration dbConfig = new DBConfiguration())
+        try(DBConfiguration dbConfig = new DBConfiguration())
         {
             EntityManager em = dbConfig.getEntityManager();
             em.getTransaction().begin();
@@ -46,11 +46,11 @@ public class UserStockDAO
 
     public static UserStock getUserStockByUserNameAndCompanyName(String userName, String companyName) throws Exception
     {
-        try( DBConfiguration dbConfig = new DBConfiguration())
+        try(DBConfiguration dbConfig = new DBConfiguration())
         {
             EntityManager em = dbConfig.getEntityManager();
             String sql = "SELECT * FROM " + USER_STOCKS + " WHERE " + USER_NAME + " = ? AND " + COMPANY_NAME + " = ?";
-            Query q = em.createNativeQuery(sql, User.class);
+            Query q = em.createNativeQuery(sql, UserStock.class);
             q.setParameter(1, userName);
             q.setParameter(2, companyName);
             UserStock userStock = (UserStock)q.getSingleResult();
@@ -62,14 +62,15 @@ public class UserStockDAO
         }
     }
 
-    public static void updateUserStock(UserStock userStock)
+    public static void updateUserStock(UserStock userStock, int amount)
     {
         EntityManager em = DBConfiguration.createEntityManager();
         try
         {
             userStock = em.find(UserStock.class, userStock.getId());
             em.getTransaction().begin();
-            userStock.setNumberOfShares(userStock.getNumberOfShares());
+            userStock.setNumberOfShares(amount);
+            System.out.println(userStock.getUserName());
             em.getTransaction().commit();
         }
         finally
@@ -85,8 +86,8 @@ public class UserStockDAO
             if(userStock.getNumberOfShares() > 0 && userStock.getNumberOfShares() >= noOfShares)
             {
                 int newNumberOfShares = userStock.getNumberOfShares() - noOfShares;
-                userStock.setNumberOfShares(newNumberOfShares);
-                updateUserStock(userStock);
+                System.out.println(userStock.getNumberOfShares());
+                updateUserStock(userStock, newNumberOfShares);
             }
             else
                 throw new IllegalArgumentException("Insufficient stocks");
@@ -95,14 +96,13 @@ public class UserStockDAO
 
     }
 
-    public static void buyUserStock(User user, String userName, String companyName, int noOfShares, String symbol) throws Exception
+    public static void buyUserStock(String userName, String companyName, int noOfShares, String symbol) throws Exception
     {
         UserStock userStock = getUserStockByUserNameAndCompanyName(userName, companyName);
         if(userStock != null)
         {
             int newNumberOfShares = userStock.getNumberOfShares() + noOfShares;
-            userStock.setNumberOfShares(newNumberOfShares);
-            updateUserStock(userStock);
+            updateUserStock(userStock, newNumberOfShares);
         }
         else
         {
@@ -119,7 +119,7 @@ public class UserStockDAO
     public static String generateUniqueUserID() throws Exception
     {
         String userId = null;
-        try( DBConfiguration dbConfig = new DBConfiguration())
+        try(DBConfiguration dbConfig = new DBConfiguration())
         {
             EntityManager em = dbConfig.getEntityManager();
             User user;
@@ -136,7 +136,7 @@ public class UserStockDAO
     public static List<UserStock> getAllUserStockByUserName(String username) throws Exception
     {
 
-        try( DBConfiguration dbConfig = new DBConfiguration())
+        try(DBConfiguration dbConfig = new DBConfiguration())
         {
             EntityManager em = dbConfig.getEntityManager();
             String sql = "SELECT * FROM " + USER_STOCKS + " WHERE " + USER_NAME + " = ?";
@@ -147,17 +147,17 @@ public class UserStockDAO
         }
     }
 
-    public static double convertCurrency(double amount) throws UnirestException, JSONException
+    public static double convertCurrency(double amount, String currencyPayment, String companyPayment) throws UnirestException, JSONException
     {
         HttpResponse<JsonNode> jsonResponse = Unirest.get("https://api.apilayer.com/exchangerates_data/latest")
                 .header("apikey", "7Ct4899ogYI4n73hCpQ0RaNEgDTbzILC")
-                .queryString("symbol", "NGN")
-                .queryString("base", "USD")
+                .queryString("symbol", currencyPayment)
+                .queryString("base", companyPayment)
                 .asJson();
         JsonNode jsonNode = jsonResponse.getBody();
         JSONObject jsonoObject = jsonNode.getObject();
-        JSONObject rates = jsonoObject.getJSONObject("rate");
-        double rate = rates.getDouble("NGN");
+        JSONObject rates = jsonoObject.getJSONObject("rates");
+        double rate = rates.getDouble(currencyPayment);
         double nairaValue = amount * rate;
         return nairaValue;
 

@@ -46,9 +46,9 @@ public class BuyStockServlet extends HttpServlet
             String companyName = request.getParameter("companyName");
             String symbol = request.getParameter("symbol");
             int noOfShares = Integer.parseInt(request.getParameter("noOfShares"));
-            User user = UserDAO.getUserByUserNameOrEmail(userName);
-            UserStockDAO.buyUserStock(user, userName, companyName, noOfShares, symbol);
+            UserStockDAO.buyUserStock(userName, companyName, noOfShares, symbol);
             JSONObject jsono = new JSONObject();
+            jsono.put("status", "success");
             jsono.put("message", "Successfully Bought");
             out.print(jsono);
         }
@@ -57,8 +57,10 @@ public class BuyStockServlet extends HttpServlet
             try
             {
                 JSONObject jsono = new JSONObject();
+                jsono.put("status", "error");
                 jsono.put("message", e.getMessage());
                 out.print(jsono);
+                e.printStackTrace(System.err);
             }
             catch(JSONException jsone)
             {
