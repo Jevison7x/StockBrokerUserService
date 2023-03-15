@@ -1,16 +1,3 @@
-/*
- * ==========================================================================================
- * @(#)Digester.java
- * Document type: Plain Old Java Object Class
- * Company: Xyneex Technologies
- * Author: Jevison Archibong
- * Date/Time Created: September 05, 2010. 08:16 PM
- * Version: 1.1
- * Compiler: JDK 1.6.0 SE
- * Operating System: Windows Vista Home Basic
- * Computer System: Becky-PC
- * ==========================================================================================
- */
 package com.bizblock.user.security;
 
 import javax.swing.JOptionPane;
@@ -44,11 +31,9 @@ import org.jasypt.salt.RandomSaltGenerator;
  * The <code>getPassword</code> method is an optional method, which may be useful in a Java console based or GUI application/<i>Class</i> which must also instantiate an instance of this <i>Class</i>.
  * </p>
  *
- * @author Jevison Archibong
+ * @author Praise
  *
  * @version 1.1
- *
- * @since 05 September 2010, 20:16:41
  *
  * @see DigestMatcher
  */

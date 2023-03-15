@@ -1,16 +1,3 @@
-/*
- * ==========================================================================================
- * @(#)RunDigester.java
- * Document type: Java Application Launcher Class
- * Company: Xyneex Technologies
- * Author: Jevison Archibong
- * Date/Time Created: September 05, 2010. 08:16 PM
- * Version: 1.1
- * Compiler: JDK 1.6.0 SE
- * Operating System: Windows Vista Home Basic
- * Computer System: Becky-PC
- * ==========================================================================================
- */
 package com.bizblock.user.security;
 
 /**
@@ -19,9 +6,8 @@ package com.bizblock.user.security;
  * resulting digest through the command line interface. The <code>Digester.getPassword</code> method is called in the main method of this <i>Class</i>
  * </p>
  *
- * @author Jevison Archibong
+ * @author Praise
  *
- * @since 05 September 2010, 20:16:41
  *
  * @version 1.1
  *
