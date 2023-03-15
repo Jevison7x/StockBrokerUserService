@@ -1,6 +1,6 @@
- 
 package com.bizblock.user.database;
 
+import com.bizblock.library.database.DBConfiguration;
 import javax.persistence.Persistence;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
