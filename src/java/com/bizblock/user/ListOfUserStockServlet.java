@@ -49,6 +49,7 @@ public class ListOfUserStockServlet extends HttpServlet
             JSONArray userStockArray = new JSONArray();
             userStockArray.put(userStocks);
             JSONObject jsono = new JSONObject();
+            jsono.put("status", "success");
             jsono.put("userStock", userStockArray);
             out.print(jsono);
         }
@@ -57,6 +58,7 @@ public class ListOfUserStockServlet extends HttpServlet
             try
             {
                 JSONObject jsono = new JSONObject();
+                jsono.put("status", "error");
                 jsono.put("message", e.getMessage());
                 out.print(jsono);
             }
