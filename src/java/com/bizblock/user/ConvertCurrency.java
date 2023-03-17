@@ -33,13 +33,12 @@ public class ConvertCurrency extends HttpServlet
 
         try
         {
-            String currencyPayment = request.getParameter("currencyPayment");
+            String paymentCurrency = request.getParameter("paymentCurrency");
             String companyCurrency = request.getParameter("companyCurrency");
-            double amount = Double.parseDouble(request.getParameter("amount"));
-            double worth = UserStockDAO.convertCurrency(amount, currencyPayment, companyCurrency);
+            double rate = UserStockDAO.convertCurrency(paymentCurrency, companyCurrency);
             JSONObject jsono = new JSONObject();
             jsono.put("status", "success");
-            jsono.put("currencyConverted", worth);
+            jsono.put("rate", rate);
             out.print(jsono);
         }
         catch(Exception e)

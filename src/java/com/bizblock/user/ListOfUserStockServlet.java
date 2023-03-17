@@ -2,6 +2,7 @@ package com.bizblock.user;
 
 import com.bizblock.library.user.UserStock;
 import com.bizblock.library.user.UserStockDAO;
+import com.bizblock.library.user.UserTokenDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -9,7 +10,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,22 +33,29 @@ public class ListOfUserStockServlet extends HttpServlet
     {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
+        JSONObject jsono = new JSONObject();
         try
         {
             String username = request.getParameter("username");
-            List<UserStock> userStocks = UserStockDAO.getAllUserStockByUserName(username);
-            JSONArray userStockArray = new JSONArray();
-            userStockArray.put(userStocks);
-            JSONObject jsono = new JSONObject();
-            jsono.put("status", "success");
-            jsono.put("userStock", userStockArray);
-            out.print(jsono);
+            String token = request.getParameter("token");
+            if(UserTokenDAO.tokenIsValid(username, token))
+            {
+                List<UserStock> userStocks = UserStockDAO.getAllUserStockByUserName(username);
+                jsono.put("status", "success");
+                jsono.put("userStockArray", userStocks);
+                out.print(jsono);
+            }
+            else
+            {
+                jsono.put("status", "expiredSession");
+                jsono.put("message", "Your session has expired, please login.");
+                out.print(jsono);
+            }
         }
         catch(Exception e)
         {
             try
             {
-                JSONObject jsono = new JSONObject();
                 jsono.put("status", "error");
                 jsono.put("message", e.getMessage());
                 out.print(jsono);
