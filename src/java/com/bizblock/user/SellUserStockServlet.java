@@ -34,9 +34,9 @@ public class SellUserStockServlet extends HttpServlet
         {
 
             String userName = request.getParameter("username");
-            String companyName = request.getParameter("companyName");
+            String companySymbol = request.getParameter("companySymbol");
             int noOfShares = Integer.parseInt(request.getParameter("noOfShares"));
-            UserStockDAO.sellUserStock(userName, companyName, noOfShares);
+            UserStockDAO.sellUserStock(userName, companySymbol, noOfShares);
             JSONObject jsono = new JSONObject();
             jsono.put("status", "success");
             jsono.put("message", "Successfully Sold");
