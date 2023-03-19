@@ -1,5 +1,7 @@
 package com.bizblock.user;
 
+import com.bizblock.library.company.CompanyStock;
+import com.bizblock.library.company.CompanyStockDAO;
 import com.bizblock.library.user.UserStock;
 import com.bizblock.library.user.UserStockDAO;
 import com.bizblock.library.user.UserTokenDAO;
@@ -41,8 +43,10 @@ public class ListOfUserStockServlet extends HttpServlet
             if(UserTokenDAO.tokenIsValid(username, token))
             {
                 List<UserStock> userStocks = UserStockDAO.getAllUserStockByUserName(username);
+                List<CompanyStock> companyStocks = CompanyStockDAO.getAllCompanyStocks();
                 jsono.put("status", "success");
                 jsono.put("userStockArray", userStocks);
+                jsono.put("companyStocks", companyStocks);
                 out.print(jsono);
             }
             else

@@ -1,6 +1,7 @@
 package com.bizblock.user;
 
 import com.bizblock.library.user.UserStockDAO;
+import com.bizblock.library.user.UserTokenDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -30,22 +31,31 @@ public class BuyStockServlet extends HttpServlet
     {
         response.setContentType("json/application");
         PrintWriter out = response.getWriter();
+        JSONObject jsono = new JSONObject();
         try
         {
-            String userName = request.getParameter("username");
-            String symbol = request.getParameter("symbol");
-            int noOfShares = Integer.parseInt(request.getParameter("noOfShares"));
-            UserStockDAO.buyUserStock(userName, noOfShares, symbol);
-            JSONObject jsono = new JSONObject();
-            jsono.put("status", "success");
-            jsono.put("message", "Successfully Bought");
-            out.print(jsono);
+            String username = request.getParameter("username");
+            String token = request.getParameter("token");
+            if(UserTokenDAO.tokenIsValid(username, token))
+            {
+                String symbol = request.getParameter("companySymbol");
+                int noOfShares = Integer.parseInt(request.getParameter("noOfShares"));
+                UserStockDAO.buyUserStock(username, noOfShares, symbol);
+                jsono.put("status", "success");
+                jsono.put("message", "Stocks Bought Successfully");
+                out.print(jsono);
+            }
+            else
+            {
+                jsono.put("status", "expiredSession");
+                jsono.put("message", "Your session has expired, please login.");
+                out.print(jsono);
+            }
         }
         catch(Exception e)
         {
             try
             {
-                JSONObject jsono = new JSONObject();
                 jsono.put("status", "error");
                 jsono.put("message", e.getMessage());
                 out.print(jsono);

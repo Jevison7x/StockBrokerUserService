@@ -1,6 +1,7 @@
 package com.bizblock.user;
 
 import com.bizblock.library.user.UserStockDAO;
+import com.bizblock.library.user.UserTokenDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -16,7 +17,6 @@ import org.json.JSONObject;
  */
 public class SellUserStockServlet extends HttpServlet
 {
-
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *
@@ -25,28 +25,35 @@ public class SellUserStockServlet extends HttpServlet
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
+        JSONObject jsono = new JSONObject();
         try
         {
-
-            String userName = request.getParameter("username");
-            String companySymbol = request.getParameter("companySymbol");
-            int noOfShares = Integer.parseInt(request.getParameter("noOfShares"));
-            UserStockDAO.sellUserStock(userName, companySymbol, noOfShares);
-            JSONObject jsono = new JSONObject();
-            jsono.put("status", "success");
-            jsono.put("message", "Successfully Sold");
-            out.print(jsono);
+            String username = request.getParameter("username");
+            String token = request.getParameter("token");
+            if(UserTokenDAO.tokenIsValid(username, token))
+            {
+                String companySymbol = request.getParameter("companySymbol");
+                int noOfShares = Integer.parseInt(request.getParameter("noOfShares"));
+                UserStockDAO.sellUserStock(username, companySymbol, noOfShares);
+                jsono.put("status", "success");
+                jsono.put("message", "Successfully Sold");
+                out.print(jsono);
+            }
+            else
+            {
+                jsono.put("status", "expiredSession");
+                jsono.put("message", "Your session has expired, please login.");
+                out.print(jsono);
+            }
         }
         catch(Exception e)
         {
             try
             {
-                JSONObject jsono = new JSONObject();
                 jsono.put("status", "error");
                 jsono.put("message", e.getMessage());
                 out.print(jsono);

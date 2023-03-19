@@ -16,7 +16,6 @@ import org.json.JSONObject;
  */
 public class ConvertCurrency extends HttpServlet
 {
-
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *
