@@ -10,8 +10,8 @@
         <properties>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
             <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/bizblock_stockbroker?useSSL=false"/>
-            <property name="javax.persistence.jdbc.user" value="bizblock_stock_user"/>
-            <property name="javax.persistence.jdbc.password" value="D@t@~P@55w0rd"/>
+            <property name="javax.persistence.jdbc.user" value=""/>
+            <property name="javax.persistence.jdbc.password" value=""/>
         </properties>
     </persistence-unit>
 </persistence>
